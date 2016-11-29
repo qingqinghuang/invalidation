@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/MacPorts 2013_3) (format=pdflatex 2013.10.15)  22 NOV 2016 17:14
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/MacPorts 2013_3) (format=pdflatex 2013.10.15)  28 NOV 2016 21:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -547,56 +547,54 @@ File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 37.
-
-<sys1.pdf, id=20, 539.01375pt x 469.755pt>
-File: sys1.pdf Graphic file (type pdf)
- <use sys1.pdf>
-Package pdftex.def Info: sys1.pdf used on input line 73.
-(pdftex.def)             Requested size: 140.92793pt x 122.82153pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[1
+ [1
 
 {/opt/local/var/db/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+<sys1.pdf, id=40, 539.01375pt x 469.755pt>
+File: sys1.pdf Graphic file (type pdf)
+ <use sys1.pdf>
+Package pdftex.def Info: sys1.pdf used on input line 115.
+(pdftex.def)             Requested size: 140.92793pt x 122.82153pt.
+ [2 <./sys1.pdf>]
 No file notes.bbl.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 109.
-[2 <./sys1.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 109.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 153.
+[3]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 153.
  (./notes.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 109.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 109.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 153.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 153.
 Package rerunfilecheck Info: File `notes.out' has not changed.
-(rerunfilecheck)             Checksum: 67241D277F4907017DA8D63CA4665694;202.
+(rerunfilecheck)             Checksum: BB36A39ACB401C9BDEEA124FAB166342;199.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 109.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 153.
  ) 
 Here is how much of TeX's memory you used:
- 9334 strings out of 494227
- 134010 string characters out of 6157703
- 250368 words of memory out of 5000000
- 12477 multiletter control sequences out of 15000+600000
+ 9345 strings out of 494227
+ 134094 string characters out of 6157703
+ 251368 words of memory out of 5000000
+ 12479 multiletter control sequences out of 15000+600000
  15589 words of font info for 58 fonts, out of 8000000 for 9000
  430 hyphenation exceptions out of 8191
- 29i,6n,35p,270b,328s stack positions out of 5000i,500n,10000p,200000b,80000s
-</opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></o
-pt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></opt/lo
-cal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></opt/local/sh
-are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></opt/local/share/te
-xmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/local/share/texmf-te
-xlive/fonts/type1/public/amsfonts/cm/cmr17.pfb></opt/local/share/texmf-texlive/
-fonts/type1/public/amsfonts/cm/cmr8.pfb></opt/local/share/texmf-texlive/fonts/t
-ype1/public/amsfonts/cm/cmsy10.pfb></opt/local/share/texmf-texlive/fonts/type1/
-public/amsfonts/cm/cmsy8.pfb></opt/local/share/texmf-texlive/fonts/type1/public
-/amsfonts/cm/cmti10.pfb>
-Output written on notes.pdf (2 pages, 149849 bytes).
+ 29i,8n,35p,270b,464s stack positions out of 5000i,500n,10000p,200000b,80000s
+</opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></o
+pt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></opt/lo
+cal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></opt/local/s
+hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi6.pfb></opt/local/share/t
+exmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></opt/local/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></opt/local/share/texmf-texlive
+/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/local/share/texmf-texlive/fonts
+/type1/public/amsfonts/cm/cmr17.pfb></opt/local/share/texmf-texlive/fonts/type1
+/public/amsfonts/cm/cmr8.pfb></opt/local/share/texmf-texlive/fonts/type1/public
+/amsfonts/cm/cmsy10.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmsy8.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/c
+m/cmti10.pfb>
+Output written on notes.pdf (3 pages, 172384 bytes).
 PDF statistics:
- 116 PDF objects out of 1000 (max. 8388607)
- 97 compressed objects within 1 object stream
- 11 named destinations out of 1000 (max. 500000)
+ 139 PDF objects out of 1000 (max. 8388607)
+ 116 compressed objects within 2 object streams
+ 20 named destinations out of 1000 (max. 500000)
  38 words of extra memory for PDF output out of 10000 (max. 10000000)
 
