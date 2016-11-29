@@ -55,13 +55,15 @@ Given the IQC description of the uncertain plant, the disturbance $d$ and the me
 as $\mc Q_P$, $\mc Q_d$, $\mc Q_n$.  The feasibility problem for validation of $K$ is as follows:
 does there exist $(d, n)$ such that:
 \begin{align*}
-  d\in\mc Q_d, \quad n\in\mc Q_n, \quad \tx{ and } \quad (K (r- (y+n)) + d, y )\in\mc Q_P.x
+  & (r,e)\in\mc Q_{T}, \quad\tx{tracking performance}
+  \\
+  & d\in\mc Q_d, \quad n\in\mc Q_n, \quad \tx{ and } \quad (K (r- (y+n)) + d, y )\in\mc Q_P.
 \end{align*}
 
 Naive question: why not replace Step 2 with IQC synthesis? why not replace Step 1 with point
 estimator plus uncertainty set?
 
-
+\newpage
 
 \section{Setup}
 
