@@ -17,7 +17,7 @@
 \title{controller validation for uncertain systems}
 \date{\today}
 
-\maketitle
+%\maketitle
 %\thispagestyle{empty}
 %\pagestyle{empty}
 
@@ -27,6 +27,41 @@
 % \end{keywords}
 
 \setcounter{page}{1}
+
+\section{Example of tracking}
+
+\paragraph{Step 1}
+Open loop id for unknown plant $P$. Run experiment to obtain (input, output) sequence
+$(s,v)$.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.3\linewidth]{sys3.pdf}
+\end{figure}
+
+
+Assume the measurement noise $w$ in a bounded set with IQC description $\mc Q_w$. Convert the
+observation to IQCs about the plant $\mc Q_P$.
+
+\paragraph{Step 2}
+Place the candidate controller $K$ in the closed loop. Run experiment to obtain (reference, output)
+sequence $(r, y)$.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.5\linewidth]{sys2.pdf}
+\end{figure}
+
+
+Given the IQC description of the uncertain plant, the disturbance $d$ and the measurement noise $n$
+as $\mc Q_P$, $\mc Q_d$, $\mc Q_n$.  The feasibility problem for validation of $K$ is as follows:
+does there exist $(d, n)$ such that:
+\begin{align*}
+  d\in\mc Q_d, \quad n\in\mc Q_n, \quad \tx{ and } \quad (K (r- (y+n)) + d, y )\in\mc Q_P.x
+\end{align*}
+
+Naive question: why not replace Step 2 with IQC synthesis? why not replace Step 1 with point
+estimator plus uncertainty set?
+
+
 
 \section{Setup}
 
@@ -112,13 +147,10 @@ throw it out. If more than one $K$ is left, we can try:
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.3\linewidth]{sys1.pdf}
+  \includegraphics[width=.4\linewidth]{sys1.pdf}
 \end{figure}
 
 
-
-
-\section{Example of tracking}
 
 
 \section{Discussions}
@@ -145,6 +177,10 @@ After studying the 0-th order question.
   determines the $u$ input sequence. We want to select a controller $K\in \mc K$ so that we can
   shave of a large portion of $\mc K$ with the invalidation procedure.
 \end{enumerate}
+
+
+
+
 
 
 \bibliographystyle{plain}
