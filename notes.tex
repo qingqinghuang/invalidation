@@ -75,11 +75,23 @@ Similarly, the synthesis problem of $K$ is as follows:
   s.t.& \tx{ the above hold}
 \end{align*}
 
+
+\paragraph{Algo}
 When the constraints are IQCs, turn it into LMI.
 
+\paragraph{Sample complexity}
+This is the worst case type analysis.
 
-Naive questions: why not replace Step 2 with IQC synthesis? why not replace Step 1 with point
-estimator plus uncertainty set?
+Given $M$ observed roll-outs for step 1, we can obtain tighter constraints of $P$, which converges
+to the underlying truth, and the optimal solution in the second step also converges to the optimal
+controller with respect to the true plant $P$. Establish the asymptotic convergence, and then finite
+sample rate.
+
+
+
+\paragraph{Naive questions}
+Why not replace Step 2 with IQC synthesis? why not replace Step 1 with point estimator plus
+uncertainty set? Advantage compared to existing 2-step ID and robust control?
 
 \newpage
 
