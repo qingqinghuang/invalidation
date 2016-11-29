@@ -38,9 +38,12 @@ $(s,v)$.
   \includegraphics[width=.3\linewidth]{sys3.pdf}
 \end{figure}
 
-
 Assume the measurement noise $w$ in a bounded set with IQC description $\mc Q_w$. Convert the
-observation to IQCs about the plant $\mc Q_P$.
+observation to IQCs about the plant. For example, if we parameterize the plant by its impulse
+response $p$, the observation gives the constraint:
+\begin{align*}
+  ( v - p*s)\in \mc Q_w.
+\end{align*}
 
 \paragraph{Step 2}
 Place the candidate controller $K$ in the closed loop. Run experiment to obtain (reference, output)
@@ -51,19 +54,36 @@ sequence $(r, y)$.
 \end{figure}
 
 
-Given the IQC description of the uncertain plant, the disturbance $d$ and the measurement noise $n$
-as $\mc Q_P$, $\mc Q_d$, $\mc Q_n$.  The feasibility problem for validation of $K$ is as follows:
-does there exist $(d, n)$ such that:
+Given the constraint of the uncertain plant from Step 1, the disturbance $d$ and the measurement
+noise $n$ as $\mc Q_d$, $\mc Q_n$. Let $Q_{T,\gamma}$ denote the achieved performance of $(r,y)$
+with parameter $\gamma$.
+
+The feasibility problem for validation of $K$ is as follows: Does there exist noise signal $(d, n)$
+and impulse response of the plant $p$ such that:
 \begin{align*}
-  & (r,e)\in\mc Q_{T}, \quad\tx{tracking performance}
+  & (r,y)\in\mc Q_{T,\gamma}, \quad\tx{(tracking performance achieved)}
   \\
-  & d\in\mc Q_d, \quad n\in\mc Q_n, \quad \tx{ and } \quad (K (r- (y+n)) + d, y )\in\mc Q_P.
+  & e = r-(y+n), \quad u = K e, \quad y = p * (u+d),  \quad\tx{(signals)}
+  \\
+  & d\in\mc Q_d, \quad n\in\mc Q_n,  \quad (v-p*s )\in\mc Q_w. \quad\tx{(constraints satisfied)}
 \end{align*}
 
-Naive question: why not replace Step 2 with IQC synthesis? why not replace Step 1 with point
+Similarly, the synthesis problem of $K$ is as follows:
+\begin{align*}
+  &\min_{K\in\mc K} \gamma
+  \\
+  s.t.& \tx{ the above hold}
+\end{align*}
+
+When the constraints are IQCs, turn it into LMI.
+
+
+Naive questions: why not replace Step 2 with IQC synthesis? why not replace Step 1 with point
 estimator plus uncertainty set?
 
 \newpage
+
+
 
 \section{Setup}
 
