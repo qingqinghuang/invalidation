@@ -28,9 +28,25 @@
 
 \setcounter{page}{1}
 
-\section{Example of tracking}
 
-\paragraph{Step 1}
+\section{ID-Control Problem}
+The goal is to use IQC constraints to replace the clear-cut between sys id and robust controller
+synthesis.
+
+
+\paragraph{To do list }
+\begin{enumerate}
+\item
+  simulation of the simple setting to see how it works (with IQC synthesis)
+\item
+  sample complexity of controller invalidation
+\item
+  sample complexity of robust controller synthesis
+\end{enumerate}
+
+
+
+\paragraph{Step 1, sys id}
 Open loop id for unknown plant $P$. Run experiment to obtain (input, output) sequence
 $(s,v)$.
 \begin{figure}[h!]
@@ -39,13 +55,17 @@ $(s,v)$.
 \end{figure}
 
 Assume the measurement noise $w$ in a bounded set with IQC description $\mc Q_w$. Convert the
-observation to IQCs about the plant. For example, if we parameterize the plant by its impulse
-response $p$, the observation gives the constraint:
+observation $(s,v)$ to IQCs about the plant.
+
+For example, assume that $P$ is FIR and the length of the observation is larger, and assume that $w$
+lies in bounded $\ell_2$ ball. We parameterize the plant by its impulse response $p$.  The observation
+$(s,v)$ gives the following constraint on $p$:
 \begin{align*}
-  ( v - p*s)\in \mc Q_w.
+  \| v - p*s\|_2\le \gamma_w.
 \end{align*}
 
-\paragraph{Step 2}
+\paragraph{Step 2, controller invalidation}
+
 Place the candidate controller $K$ in the closed loop. Run experiment to obtain (reference, output)
 sequence $(r, y)$.
 \begin{figure}[h!]
@@ -53,13 +73,12 @@ sequence $(r, y)$.
   \includegraphics[width=.5\linewidth]{sys2.pdf}
 \end{figure}
 
+Given the constraints for the uncertain plant from Step 1, the disturbance $d$ and the measurement
+noise $n$ as $\mc Q_d$, $\mc Q_n$. Let $\mc Q_{T,\gamma}$ denote the achieved quadratic performance
+of the closed loop channel $r\to y$ with parameter $\gamma$.
 
-Given the constraint of the uncertain plant from Step 1, the disturbance $d$ and the measurement
-noise $n$ as $\mc Q_d$, $\mc Q_n$. Let $Q_{T,\gamma}$ denote the achieved performance of $(r,y)$
-with parameter $\gamma$.
-
-The feasibility problem for validation of $K$ is as follows: Does there exist noise signal $(d, n)$
-and impulse response of the plant $p$ such that:
+The invalidation of controller $K$ is to certify that there does not exist noise signal $(d, n)$ and
+impulse response of the plant $p$ such that:
 \begin{align*}
   & (r,y)\in\mc Q_{T,\gamma}, \quad\tx{(tracking performance achieved)}
   \\
@@ -68,68 +87,91 @@ and impulse response of the plant $p$ such that:
   & d\in\mc Q_d, \quad n\in\mc Q_n,  \quad (v-p*s )\in\mc Q_w. \quad\tx{(constraints satisfied)}
 \end{align*}
 
-Similarly, the synthesis problem of $K$ is as follows:
+Set $\mc Q_d$ and $\mc Q_n$ to be $\ell_2$ ball, and parameterize $K$ by a FIR $k$.  We invalidate $K$
+if there does not exist signal $(d, n, p )$ such that
 \begin{align*}
-  &\min_{K\in\mc K} \gamma
+  & e = r-(y+n), \quad u = k * e, \quad y = p * (u+d), \quad\tx{(signals)}
   \\
-  s.t.& \tx{ the above hold}
+  & \|y - r\|_2 \le \gamma, \quad \|d\|_2\le \gamma_d, \quad  \|n\|_2\le \gamma_n, \quad
+  \|v-p*s\|_2\le \gamma_w.
 \end{align*}
+\qq{convex?}
 
 
-\paragraph{Algo}
-When the constraints are IQCs, turn it into LMI.
-
-\paragraph{Sample complexity}
-This is the worst case type analysis.
-
-Given $M$ observed roll-outs for step 1, we can obtain tighter constraints of $P$, which converges
-to the underlying truth, and the optimal solution in the second step also converges to the optimal
-controller with respect to the true plant $P$. Establish the asymptotic convergence, and then finite
-sample rate.
+\tb{ Sample complexity question.}
+Suppose $K$ can be invalidated. Assume that $w$, $d$, $n$ are Gaussian white noise. How many
+roll-outs in Step 1 do we need in order to invalidate $K$ with high probability.
 
 
+\paragraph{Step 3, robust controller synthesis}
+The synthesis problem of $K$ is as follows:
+\begin{align*}
+  &\min_{K\in\mc K} \gamma,\quad s.t. \tx{ the above inequalities hold}.
+\end{align*}
+Note that this is  nonconvex.
 
-\paragraph{Naive questions}
-Why not replace Step 2 with IQC synthesis? why not replace Step 1 with point estimator plus
-uncertainty set? Advantage compared to existing 2-step ID and robust control?
+\tb{ Sample complexity question.}
+Assume that $w$, $d$, $n$ are Gaussian white noise. How many roll-outs in Step 1 do we need in order
+to find $K$ sufficiently close to the optimal controller with respect to the underlying true plant.
+
+
+
+% Given $M$ observed roll-outs for step 1, we can obtain tighter constraints of $P$, which converges
+% to the underlying truth, and the optimal solution in the second step also converges to the optimal
+% controller with respect to the true plant $P$. Establish the asymptotic convergence, and then finite
+% sample rate.
+
+% \paragraph{Naive questions}
+% Why not replace Step 2 with IQC synthesis? why not replace Step 1 with point estimator plus
+% uncertainty set? Advantage compared to existing 2-step ID and robust control?
+
 
 \newpage
 
 
 
-\section{Setup}
+\section{Controller invalidation for synthesis}
+Robust synthesis is non-convex.  If we can do experiments to test different controllers, can we
+``solve'' the synthesis problem by ruling out controllers which do not achieve the robust
+performance? How to design the experiments to ``solve'' the synthesis problem in a more efficient
+way?
 
-\subsection{Basic idea}
+%Decreases complexity by introducing uncertainty to the system and be more conservative.
 
+\paragraph{To do list }
+\begin{enumerate}
+\item Find a simple parameterization of controller such that it works.
+\item Sample complexity of invalidation?
+\item Iterative id and invalidation?
+\end{enumerate}
+
+
+
+\paragraph{Setting}
 Given:
 \begin{itemize}
 \item The part of plant that is known a priori, denoted by $P$.
 \item Support of the of the unknown part of the plant $\Delta$: an {\em initial} description in the
-  form of integral quadratic constraints on its input-output pair $(v,s)\in \mc Q_\Delta = \{Q_1,\dots, Q_L\}$.
+  form of integral quadratic constraints on its input-output pair $(v,s)\in \mc Q_\Delta =
+  \{Q_1,\dots, Q_L\}$.
   % (why not ssv or coprime factor)
-\item Support of the controller $K$: a (discrete) set of candidate controllers $K \in \mc K = \{K_1,\dots,
-  K_M\}$.
+\item Support of the controller $K$: a (discrete) set of candidate controllers $K \in \mc K =
+  \{K_1,\dots, K_M\}$.
 \item Support of the unobserved exogenous noise $w$: a bounded set in the form of IQCs $w\in \mc
-  Q_{W}$.
+  Q_{w}$.
 \end{itemize}
-Goal: learn about the system so that we can find a controller $K\in\mc K$ which stabilizes the
-system and optimizes the $\ell_2$ gain $\|T_{w\to y}\|_{\infty}$.
+Goal: find a controller $K\in\mc K$ that achieves robust stability and performance.
 
-\paragraph{}
-The basic idea of ``controller invalidation'' is as follows.
+\paragraph{Basic idea}
+The basic idea of ``controller invalidation experiments for synthesis'' is as follows.
 
+Consider closed-loop system with a candidate controller $K\in\mc K$ in place.  Generate length $T$
+observation $(u_t, y_t, z_t)_{t=1}^{T}$ generated by the closed loop system.
 
+  Given $P, \mc Q_{\Delta}, \mc Q_{W}$, invalidate $K$ if there does not exist signal $(w_t, v_t,
+  s_t)_{t=1}^{T}$ such that the following holds:
 \begin{enumerate}
 \item
-
-Consider closed-loop system with a candidate controller $K\in\mc K$ in place.
-
-Given $P, \mc Q_{\Delta}, \mc Q_{W}$, given length $T$ observation $(u_t, y_t, z_t)_{t=1}^{T}$
-generated by the closed loop system, solve the following feasibility problem.
-
-Does there exist signal $(w_t, v_t, s_t)_{t=1}^{T}$ such that the following holds:
-\begin{enumerate}
-\item {(in time domain)}
   \begin{align*} (z,y,v) = P (u,w,s), \quad u = K z.
   \end{align*}
   Let $F_u(P,K)$ denote the linear fractional transformation, the two time domain equalities are
@@ -138,43 +180,22 @@ Does there exist signal $(w_t, v_t, s_t)_{t=1}^{T}$ such that the following hold
   \end{align*}
 
 \item IQCs for system  uncertainties are satisfied:
-  \begin{align*} & w\in\mc Q_W, \quad (v,s) \in \mc Q_{\Delta}
+  \begin{align*} & w\in\mc Q_w, \quad (v,s) \in \mc Q_{\Delta}
   \end{align*}
 
-\item Performance achieved, namely $\|T_{w\to y}\|_{\infty} \le \gamma$. Note that this closed loop
-  constraint can also be described as a IQC $\mc Q_{cl}$ for the pair of signal $(w,y)$:
+\item Performance achieved.
   \begin{align*}
-    (w,y) \in \mc Q_{cl}.
+    (w,y) \in \mc Q_{T, \gamma}.
   \end{align*}
-
 \end{enumerate}
-These can be turned into an LMI.
+\qq{convex?}
 
-% try to invalidate $K$.
-
-\item If we cannot find such $(w,v,s)$, we should rule out $K$ from $\mc K$, because there does not
-  exist $\Delta$ and $w$ in the uncertainty set such that $K$ is feasible.
-
-\item In the event that we find such $(w,v,s)$, namely we can find some $w$ and  $\Delta$ in the
-  uncertainty set for which $K$ is feasible, we should keep $K$ in $\mc K$.
-
-\item Moreover, for each $K_i\in\mc K$, we can potentially identify a set of $\Delta$ that are
-  consistent with the observation for some $w\in\mc Q_{w}$. Denote it by $\Delta_{K_i}$.
-  \\
-  Find the tightest IQC description for the set $\cap_i \Delta_{K_i}$ and denote it by $\mc
-  Q_{\Delta}'$.  Can we confidently rule out the subset of $\Delta$ in $\mc Q_{\Delta} \backslash
-  \mc Q_{\Delta}'$?  No system in this subset can generate the observed sequences.
-
-\end{enumerate}
-
-\tb{Remark:}
 We need to do this test for every $K$ in the discrete set $\mc K$ to determine whether to keep it or
-throw it out. If more than one $K$ is left, we can try:
+throw it out. If more than one $K$ is left, try:
 \begin{itemize}
 \item Get new observations for each $K$ with the same setup. Run the same invalidation procedure.
 \item With the same observation, search for better performance so that sub-optimal controllers would
   be ruled out.
-\item Impose more IQCs (obtained from observation data) to shrink the uncertainty set of $\Delta$.
 \end{itemize}
 
 
@@ -187,29 +208,26 @@ throw it out. If more than one $K$ is left, we can try:
 
 
 
-\section{Discussions}
-
-From the Poolla paper (Time domain approach to model validation), only the unstructured uncertainty
-set (convex ball) can be treated. More complicated IQC, and how to obtain more complicated IQC from data?
-
-
-Naive questions
-\begin{enumerate}
-\item how does this approach compare to controller synthesis with the IQC for $\Delta$? -- we can
-  use the observation sequences without id + control.
-\end{enumerate}
-
-
-After studying the 0-th order question.
+\paragraph{Discussions}
 \begin{enumerate}
 \item Start with a compact set for $\mc K$, we want to test one instance of $K$ and be able to rule
   out a measurable subset of $\mc K$.
-\item Incorporate the information in the observation sequences to get a finer description of the
-  uncertainty set $\Delta$ in terms of more IQCs in $\mc Q_{\Delta}$, which would give us more
-  invalidation power.
-\item Experiment design. Note that in the closed loop id, choosing a particular controller $K$
+
+  Experiment design. Note that in the closed loop id, choosing a particular controller $K$
   determines the $u$ input sequence. We want to select a controller $K\in \mc K$ so that we can
   shave of a large portion of $\mc K$ with the invalidation procedure.
+
+\item Incorporate the information in the observed sequences to get a finer description of the
+  uncertainty set $\Delta$, which would give us more invalidation power.
+
+ For each $K_i\in\mc K$, we can potentially identify a set of $\Delta$ that are consistent with
+  the observation for some $w\in\mc Q_{w}$. Denote it by $\Delta_{K_i}$.
+  \\
+  Find the tightest IQC description for the set $\cap_i \Delta_{K_i}$ and denote it by $\mc
+  Q_{\Delta}'$.  Can we confidently rule out the subset of $\Delta$ in $\mc Q_{\Delta} \backslash
+  \mc Q_{\Delta}'$?  No system in this subset can generate the observed sequences.
+
+
 \end{enumerate}
 
 
