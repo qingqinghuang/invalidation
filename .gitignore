@@ -1,7 +1,8 @@
 *.aux
 *.fls
-notes.pdf
 *.bbl
 *.synctex.gz
 *.fdb_latexmk
 *.log
+notes.pdf
+siso.pdf
