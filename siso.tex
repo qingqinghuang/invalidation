@@ -22,9 +22,12 @@
 \DeclareMathOperator{\LittleWm}{\omega}
 \newcommand{\LittleOmega}[1]{\LittleWm\left({#1}\right)}
 
+\newcommand{\calW}{\mathcal{W}}
+
 \newcommand{\calY}{\mathcal{Y}}
 \newcommand{\calS}{\mathcal{S}}
 \newcommand{\calD}{\mathcal{D}}
+\newcommand{\calN}{\mathcal{N}}
 
 \newcommand{\calU}{\mathcal{U}}
 \newcommand{\Alt}{\mathrm{Alt}}
@@ -124,48 +127,70 @@
 %\endgroup
 %%% magic code ends
 
-\title{Homework 1}
+\title{SISO Controller Invalidation from Open Loop Experiments}
 
-\author{Max Simchowitz\\
-msimchow@berkeley.edu}
+%\author{Max Simchowitz\\
+%msimchow@berkeley.edu}
 
 
 \begin{document}
 \section{PID control}
-Our goal is to track a constant signal $r(t) = r_0$, using a PID controller, in the SISO setting. Assume our system has impulse-response function $g(t)$, so that starting from an zero initial state, $y(t) = u(t)*g(t) + d(t)$, where $d(t)$ is some disturbance. 
+Consider the system
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.5\linewidth]{sys2.pdf}
+\end{figure}
+Our goal is to test whether a given controller $K$ can cause the plant $P$ track a known signal $r(t)$, without placing $K$ in the closed loop, over a fixed time horizon $T$. The challenge is that the plant $P$ is unkown, and lies in some class of plants $\calP$. We also assume that our plant is subject a class $\calD$ of disturbances, and noises $\calN$. We then ask if there exists a plant $P \in \calP$ such that, for any admissible disturbance $d \in \calD$ and noise $n \in \calN$, does there exist a $P \in \calP$ such that we achieve some performance objective $Q_{T,y}(r,y)$ of the reference and output. For example, $Q_{T,y} = \sum_{t=1}^T (r(t)-y(t))^{2} = \|r - y\|_{2}$. Formally, we compute
+\begin{equation}\label{OPT}
+\begin{aligned}
+&\inf_{P \in \calP} \sup_{n \in \calN,d \in \calD} Q_{T,y}(r,y)  \\
+&\text{subject to:} \quad e = r - (y+n), \quad u = Ke, y = P(u+d)
+\end{aligned}
+\end{equation}
+For a threshold $\gamma$, we say that $K$ is \emph{invalidated} over $(\calP,\calN,\calD)$ if the optimal value of Equation~\ref{OPT} is $> \gamma$; otherwise, we say that $(\calP,\calN,\calD)$ \emph{corroborates} $K$. 
+\subsection{Shrinking the set $\calP$ with open loop ID}
+If $\calP$ is too unrestrictive, then the above optimization problem won't be able to invalidate a $K$ which doesn't meet the performance objective on the true plant, because there may be another plant $P' \in \calP$ for which the objective is met. Thus, we use open-loop experiments to constrain $P$. Namely, we consider the plant
 
-\section{Point-Estimating $g$}
-How to choose $u$ depends on our goal. Suppose we just want to learn the coefficients of $g$. Let $H(u)$ denote the hankel matrix associated with $U$, so that $y(t) = H(u)g + d(t)$. Hence, for one roll out, the optimal robust experiment design to measure $g$ is 
-\begin{eqnarray}
-\max_{u \in \calU} \sup_{d \in \calD}\|H^{\dagger}(u)y - g\|_2 = \max_{u \in \calU} \sup_{d \in \calD}\|H^{\dagger}(u)d(t)\|_2
-\end{eqnarray}
-Other objectives would consider different norms. For example, we could try to pick $u$ to minimize the $\|\|_{H_2}$ or $\|\cdot\|_{\infty}$ norm of $g$.
-\section{PID - Control usinig state feedback}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.3\linewidth]{sys3.pdf}
+\end{figure}
 
-We want to lear a controler $F$ so that the system to minimize $\|y - r\|$, using input $y - r$. Thus, the new input to the system is $y(t+1) = (A+BF)y - BFr + BFd(t)$, and our doal is to minimize $\|C(y - r)\|_2^2$. Let's assume that even though our measurements have disturbances, but the true system has no disturbance (we don't need noise rejection). Then, our goal is to choose $u$ and estimate $\hat{B},\hat{A}$ so as to minimize
-\begin{eqnarray}
-\end{eqnarray}
-
-
-
-
-
-
-
-
-
-In an order-one system $g$ is of the form $g(t) = ca^t$. Rather than estimate $g$ directly, we want to learn a controller $k = f(y -r)$ such that to minimize
-\begin{eqnarray}
-\|y-r\|
-\end{eqnarray}
-This corresponds to the system $y(t+1) = y$
-
-
-
-
-
-
-
+We then assume that take $N$ measurements of the form $v^{(j)} = Ps^{(j)} + w^{(j)}$, where $s^{(j)}$ are probe signals, and $w^{(j)}$ is stochastic noise. In the spirit of compressed sensing, we will for the moment abstract away the stochasticity of $w^{(j)}$ by assumping that the noise vectors $w = (w^{(1)},\dots,w^{(N)})$ lie in some stochastic-like set $\calW$. For example, $\calW$ can include spectral norm constraints on the matrix whose columns are formed by $w^{(j)}$ which would be celebrated by white (isotropic) noise. We will also assume that we have some prior information that $P \in \calP_0$, which we will take to control the complexity of $P$ (eg, low Hankel norm). With these constraints, we know have
+\begin{equation}\label{OPT2}
+\begin{aligned}
+&\inf_{P \in \calP} \sup_{n \in \calN,d \in \calD} Q_{T,y}(r,y)  \\
+&\text{subject to:} \quad e = r - (y+n), \quad u = Ke,\quad  y = P(u+d)\\
+& P \in \calP_0, \quad w \in \calW, \quad v^{(j)} = Ps^{(j)} + w^{(j)}, j = 1,\dots,N
+\end{aligned}
+\end{equation}
+By elimiating for $e$ and $u$, we get
+\begin{equation}\label{OPT3}
+\begin{aligned}
+&\inf_{P \in \calP} \sup_{n \in \calN,d \in \calD} Q_{T,y}(r,y)  \\
+&\text{subject to:}   (I+PK)y = PKr - PKn + Pd\\
+& P \in \calP_0, \quad w \in \calW, \quad v^{(j)} = Ps^{(j)} + w^{(j)}, j = 1,\dots,N
+\end{aligned}
+\end{equation}
+\subsection{Convexity of Equation~\ref{OPT3}}
+In what follows, we assume that $Q_{T,y}$ is a convex quadratic, and the sets $\calN,\calD,\calP_0,\calW$ are all convex. Thus, Equation~\ref{OPT3} suffers from only three sources of non-convexity, all in the iequality $(I+PK)y = PKr - PKn + Pd$:
+\begin{enumerate}
+\item  $PKy$ is bi-linear in $P$ and $y$
+\item $PKn$ is bi-linear in $P$ and $n$, both of which are unkown
+\item $Pd$ is bilinear in $P$ and $d$
+\end{enumerate}
+The latter two sources of non-convexity can be circumvented in two ways:
+\begin{enumerate}
+	\item Use an ``Outer Approximation'' or relaxation to the set of admissible $PKn$ and $Pd$
+	\item Sample $K$ rollouts of ``typical'' noises and disturbances $\{n^{(i)},d^{(i)}\}$, and solve the optimization
+	\begin{equation}\label{OPT3}
+\begin{aligned}
+&\inf_{P \in \calP} \frac{1}{K} \sum_{i=1}^K Q_{T,y}(r,y^{(i)})  \\
+&\text{subject to:}   (I+PK)y^{(i)} = PKr - PKn^{(i)} + Pd^{(i)}\\
+& P \in \calP_0, \quad w \in \calW, \quad v^{(j)} = Ps^{(j)} + w^{(j)}, j = 1,\dots,N
+\end{aligned}
+\end{equation}
+\end{enumerate}
 
 
 \end{document}	
