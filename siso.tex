@@ -147,6 +147,9 @@ Our goal is to test whether a given controller $K$ can cause the plant $P$ track
 &\text{subject to:} \quad e = r - (y+n), \quad u = Ke, y = P(u+d)
 \end{aligned}
 \end{equation}
+
+
+
 For a threshold $\gamma$, we say that $K$ is \emph{invalidated} over $(\calP,\calN,\calD)$ if the optimal value of Equation~\ref{OPT} is $> \gamma$; otherwise, we say that $(\calP,\calN,\calD)$ \emph{corroborates} $K$. 
 \subsection{Shrinking the set $\calP$ with open loop ID}
 If $\calP$ is too unrestrictive, then the above optimization problem won't be able to invalidate a $K$ which doesn't meet the performance objective on the true plant, because there may be another plant $P' \in \calP$ for which the objective is met. Thus, we use open-loop experiments to constrain $P$. Namely, we consider the plant
@@ -185,12 +188,23 @@ The latter two sources of non-convexity can be circumvented in two ways:
 	\item Sample $K$ rollouts of ``typical'' noises and disturbances $\{n^{(i)},d^{(i)}\}$, and solve the optimization
 	\begin{equation}\label{OPT3}
 \begin{aligned}
-&\inf_{P \in \calP} \frac{1}{K} \sum_{i=1}^K Q_{T,y}(r,y^{(i)})  \\
+&\inf_{P,u^{(i)},y^{(i)} \in \calP} \frac{1}{M} \sum_{i=1}^M Q(r,y^{(i)})  \\
 &\text{subject to:}   (I+PK)y^{(i)} = PKr - PKn^{(i)} + Pd^{(i)}\\
 & P \in \calP_0, \quad w \in \calW, \quad v^{(j)} = Ps^{(j)} + w^{(j)}, j = 1,\dots,N
 \end{aligned}
 \end{equation}
+Note that whereas the parameter $N$ controls the number of experiments (i.e. sample complexity), $K$ controls the number of simulations (i.e. computational complexity)
 \end{enumerate}
+We can also rewrite the previous optimization problem in the following form:
+\begin{equation}
+\begin{aligned}
+&\inf_{P \in \calP,y^{(i)},u^{(i)}} \frac{1}{M} \sum_{i=1}^M Q(r,y^{(i)})  \\
+&\text{subject to:} \quad  y^{(i)} = Pu^{(i)}, u^{(i)} = K(r - (y^{(i)}+n^{(i)})) + d^{(i)}
+\end{aligned}
+\end{equation}
 
+
+\subsection{}
+Considering the second
 
 \end{document}	
