@@ -120,7 +120,7 @@
 \renewcommand\footrulewidth{0.4pt}
 
 \newcommand{\qq}[1]{{\color{magenta}{(#1)}}}
-\newcommand{\rd}[1]{{\color{red}{ #1}}}
+\newcommand{\rb}[1]{{\color{red}{ #1}}}
 \newcommand{\bl}[1]{{\color{blue}{ #1}}}
  
 %%% magic code starts
@@ -154,7 +154,7 @@ Our goal is to test whether a given controller $K$ can cause the plant $P$ track
 
 
 
-For a threshold $\gamma$, we say that $K$ is \emph{invalidated} \rd{wouldn't this be more of a robust control setup? in the papers we have seen, wouldn't ``model invalidation'' be an inf inf, rather than an inf sup?} over $(\calP,\calN,\calD)$ if the optimal value of Equation~\ref{OPT} is $> \gamma$; otherwise, we say that $(\calP,\calN,\calD)$ \emph{corroborates} $K$. 
+For a threshold $\gamma$, we say that $K$ is \emph{invalidated} \rb{wouldn't this be more of a robust control setup? in the papers we have seen, wouldn't ``model invalidation'' be an inf inf, rather than an inf sup?} over $(\calP,\calN,\calD)$ if the optimal value of Equation~\ref{OPT} is $> \gamma$; otherwise, we say that $(\calP,\calN,\calD)$ \emph{corroborates} $K$. 
 \subsection{Shrinking the set $\calP$ with open loop ID}
 If $\calP$ is too unrestrictive, then the above optimization problem won't be able to invalidate a $K$ which doesn't meet the performance objective on the true plant, because there may be another plant $P' \in \calP$ for which the objective is met. Thus, we use open-loop experiments to constrain $P$. Namely, we consider the plant
 
@@ -180,6 +180,7 @@ By elimiating $e$ and $u$, we get
 \end{aligned}
 \end{equation}
 \subsection{Convexity of Equation~\ref{OPT3}}
+\rb{I almost feel like we can smartly remove y in some way, or have some auxiliary problem. Given $n,r,d,P$, a feasible y comes from solving $Ax=b$.}
 In what follows, we assume that $Q_{T,y}$ is a convex quadratic, and the sets $\calN,\calD,\calP_0,\calW$ are all convex. Thus, Equation~\ref{OPT3} suffers from only three sources of non-convexity, all in the iequality $(I+PK)y = PKr - PKn + Pd$:
 \begin{enumerate}
 \item  $PKy$ is bi-linear in $P$ and $y$
