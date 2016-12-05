@@ -171,7 +171,7 @@ We then assume that take $N$ measurements of the form $v^{(j)} = Ps^{(j)} + w^{(
 & P \in \calP_0, \quad w \in \calW, \quad v^{(j)} = Ps^{(j)} + w^{(j)}, j = 1,\dots,N
 \end{aligned}
 \end{equation}
-By elimiating for $e$ and $u$, we get
+By elimiating $e$ and $u$, we get
 \begin{equation}\label{OPT3}
 \begin{aligned}
 &\inf_{P \in \calP} \sup_{n \in \calN,d \in \calD} Q_{T,y}(r,y)  \\
@@ -190,7 +190,7 @@ The latter two sources of non-convexity can be circumvented in two ways:
 \begin{enumerate}
 	\item Use an ``Outer Approximation'' or relaxation to the set of admissible $PKn$ and $Pd$
 	\item Sample $K$ rollouts of ``typical'' noises and disturbances $\{n^{(i)},d^{(i)}\}$, and solve the optimization
-	\begin{equation}\label{OPT3}
+	\begin{equation}\label{OPT4}
 \begin{aligned}
 &\inf_{P,u^{(i)},y^{(i)} \in \calP} \frac{1}{M} \sum_{i=1}^M Q(r,y^{(i)})  \\
 &\text{subject to:}   (I+PK)y^{(i)} = PKr - PKn^{(i)} + Pd^{(i)}\\
