@@ -82,20 +82,24 @@ impulse response of the plant $p$ such that:
 \begin{align*}
   & (r,y)\in\mc Q_{T,\gamma}, \quad\tx{(tracking performance achieved)}
   \\
+ &  \qq{ (r, e)\in\mc Q_{S,\gamma}, \quad \tx{(constraint on sensitivity)}}
+  \\
   & e = r-(y+n), \quad u = K e, \quad y = p * (u+d),  \quad\tx{(signals)}
   \\
   & d\in\mc Q_d, \quad n\in\mc Q_n,  \quad (v-p*s )\in\mc Q_w. \quad\tx{(constraints satisfied)}
 \end{align*}
 
 Set $\mc Q_d$ and $\mc Q_n$ to be $\ell_2$ ball, and parameterize $K$ by a FIR $k$.  We invalidate $K$
-if there does not exist signal $(d, n, p )$ such that
+if there does not exist signal $(d, n, p, e, u)$ such that
 \begin{align*}
   & e = r-(y+n), \quad u = k * e, \quad y = p * (u+d), \quad\tx{(signals)}
   \\
   & \|y - r\|_2 \le \gamma, \quad \|d\|_2\le \gamma_d, \quad  \|n\|_2\le \gamma_n, \quad
   \|v-p*s\|_2\le \gamma_w.
 \end{align*}
-\qq{convex?}
+
+This invalidation problem can be turned into an SDP feasibility.  The SDP only provides a sufficient
+condition to invalidate $K$ since s-proc is conservative.
 
 In the parlance of Smith and Dullerud, we have
 \begin{align*}
@@ -109,9 +113,15 @@ Q_1(z,v) = &\; \text{ some constraint on $p$?}
 \end{align*}
 
 
-\tb{ Sample complexity question.}
-Suppose $K$ can be invalidated. Assume that $w$, $d$, $n$ are Gaussian white noise. How many
-roll-outs in Step 1 do we need in order to invalidate $K$ with high probability.
+\tb{ Sample complexity question.}  Suppose $K$ can be invalidated for the true plant $P$. Assume
+that $w$, $d$, $n$ are Gaussian white noise. How many roll-outs \qq{in Step 1 and Step 2 }do we need
+in order to invalidate $K$ with high probability.
+
+\tb{Remark} Why not `invalidate' $K$ just by analyze the robust performance given the plant $P$ with
+uncertainty set specified in Step 1?
+
+Data driven invalidation gives us more information about the true plant $P$,
+and this Step 2 can still be viewed as part of `learning'.
 
 
 \paragraph{Step 3, robust controller synthesis}
