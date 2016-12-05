@@ -118,6 +118,10 @@
 \rfoot{\sc Page\ \thepage\ of\ \protect\pageref{LastPage}}
 \renewcommand\headrulewidth{0.4pt}
 \renewcommand\footrulewidth{0.4pt}
+
+\newcommand{\qq}[1]{{\color{magenta}{(#1)}}}
+\newcommand{\rd}[1]{{\color{red}{ #1}}}
+\newcommand{\bl}[1]{{\color{blue}{ #1}}}
  
 %%% magic code starts
 %\mathcode`*=\string"8000
@@ -140,7 +144,7 @@ Consider the system
   \centering
   \includegraphics[width=.5\linewidth]{sys2.pdf}
 \end{figure}
-Our goal is to test whether a given controller $K$ can cause the plant $P$ track a known signal $r(t)$, without placing $K$ in the closed loop, over a fixed time horizon $T$. The challenge is that the plant $P$ is unkown, and lies in some class of plants $\calP$. We also assume that our plant is subject a class $\calD$ of disturbances, and noises $\calN$. We then ask if there exists a plant $P \in \calP$ such that, for any admissible disturbance $d \in \calD$ and noise $n \in \calN$, does there exist a $P \in \calP$ such that we achieve some performance objective $Q_{T,y}(r,y)$ of the reference and output. For example, $Q_{T,y} = \sum_{t=1}^T (r(t)-y(t))^{2} = \|r - y\|_{2}$. Formally, we compute
+Our goal is to test whether a given controller $K$ can cause the plant $P$ track a known signal $r(t)$, without placing $K$ in the closed loop, over a fixed time horizon $T$. The challenge is that the plant $P$ is unkown, and lies in some class of plants $\calP$. We also assume that our plant is subject a class $\calD$ of disturbances, and noises $\calN$. We then ask if there exists a plant $P \in \calP$ such that, for any admissible disturbance $d \in \calD$ and noise $n \in \calN$, we achieve some performance objective $Q_{T,y}(r,y)$ of the reference and output. For example, $Q_{T,y} = \sum_{t=1}^T (r(t)-y(t))^{2} = \|r - y\|_{2}$. Formally, we compute
 \begin{equation}\label{OPT}
 \begin{aligned}
 &\inf_{P \in \calP} \sup_{n \in \calN,d \in \calD} Q_{T,y}(r,y)  \\
@@ -150,7 +154,7 @@ Our goal is to test whether a given controller $K$ can cause the plant $P$ track
 
 
 
-For a threshold $\gamma$, we say that $K$ is \emph{invalidated} over $(\calP,\calN,\calD)$ if the optimal value of Equation~\ref{OPT} is $> \gamma$; otherwise, we say that $(\calP,\calN,\calD)$ \emph{corroborates} $K$. 
+For a threshold $\gamma$, we say that $K$ is \emph{invalidated} \rd{wouldn't this be more of a robust control setup? in the papers we have seen, wouldn't ``model invalidation'' be an inf inf, rather than an inf sup?} over $(\calP,\calN,\calD)$ if the optimal value of Equation~\ref{OPT} is $> \gamma$; otherwise, we say that $(\calP,\calN,\calD)$ \emph{corroborates} $K$. 
 \subsection{Shrinking the set $\calP$ with open loop ID}
 If $\calP$ is too unrestrictive, then the above optimization problem won't be able to invalidate a $K$ which doesn't meet the performance objective on the true plant, because there may be another plant $P' \in \calP$ for which the objective is met. Thus, we use open-loop experiments to constrain $P$. Namely, we consider the plant
 
