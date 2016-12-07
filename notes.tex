@@ -30,77 +30,104 @@
 
 
 \section{ID-Control Problem}
-The goal is to use IQC constraints to replace the clear-cut between sys id and robust controller
-synthesis.
+%The goal is to use IQC constraints to replace the clear-cut between sys id and controller synthesis.
 
+We have open loop / closed loop experiment data (which gives information about the unknown plant $P$), a
+candidate controller $K$, and a set of closed-loop performance specification $T_{spec}$.
+
+The control question is whether the closed loop system of the controller $K$ and the unknown plant
+$P$ will meet the performance specification $T_{spec}$.
+%
+To answer that, we need an algorithm to directly check the consistency among data, controller, and
+$T_{spec}$.
+%
+The sample complexity is to quantify how much we need to know from data in order to confidently
+answer the question.
+%
+The ultimate goal of controller invalidation is that we want to efficiently prune the suboptimal
+controllers to select the one that achieves optimal closed loop performance.
 
 \paragraph{To do list }
 \begin{enumerate}
-\item
-  simulation of the simple setting to see how it works (with IQC synthesis)
-\item
-  sample complexity of controller invalidation
-\item
-  sample complexity of robust controller synthesis
+\item Pin down the details of the algorithm for controller invalidation using S-proc.
+\item Bound sample complexity of controller invalidation, under the assumptions about true plant and noise
+  model.
+\item Better experiment design for 1. open loop experiment and 2. how to prune the set of candidate controllers.
+\item Simulation of the simple setting to see how it works (with IQC synthesis)
 \end{enumerate}
 
+\subsection{Algorithm for Controller Invalidation}
 
-
-\paragraph{Step 1, sys id}
-Open loop id for unknown plant $P$. Run experiment to obtain (input, output) sequence
-$(s,v)$.
+\paragraph{Step 1,  collect open loop experiment data}
+Run open loop experiment for unknown plant $P$ to obtain $N$ pairs of length-$T$ signals $\{(s_i,v_i) :
+i=1,\dots, N\}$.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=.3\linewidth]{sys3.pdf}
 \end{figure}
 
-Assume the measurement noise $w$ in a bounded set with IQC description $\mc Q_w$. Convert the
-observation $(s,v)$ to IQCs about the plant.
+\begin{assumption}
+  Assume that the measurement noise $w$ is Gaussian white with variance $\sigma_w^2$.
+\end{assumption}
 
-For example, assume that $P$ is FIR and the length of the observation is larger, and assume that $w$
-lies in bounded $\ell_2$ ball. We parameterize the plant by its impulse response $p$.  The observation
-$(s,v)$ gives the following constraint on $p$:
-\begin{align*}
-  \| v - p*s\|_2\le \gamma_w.
-\end{align*}
+\begin{assumption}
+  Assume that $P$ is FIR and the length of the impulse response is less than $T$. We parameterize
+  the plant by its impulse response $p$.
+\end{assumption}
 
-\paragraph{Step 2, controller invalidation}
 
-Place the candidate controller $K$ in the closed loop. Run experiment to obtain (reference, output)
-sequence $(r, y)$.
+\begin{definition}[Learning from open loop data]
+  Learning from open loop data is to map the observation $(s,v)$ to a set of IQCs $\mc Q_P$.  The
+  description of the unknown plant $P$ is in the form of a set of constraints on its input output
+  signals.
+
+
+  For example, under the assumptions, the observation $(s,v)$ gives the following constraint on the
+  impulse response $p$:
+  \begin{align*}
+    ( v_i - p*s_i) (v_i - p*s_i)^\top \preceq \sigma_w^2 I, \quad \tx{for }i= 1,\dots N.
+  \end{align*}
+
+\end{definition}
+
+\paragraph{Step 2,  collect closed  loop experiment data}
+Run closed loop experiment with the candidate controller $K$ to obtain $M$ pairs of length-$T$ signals
+$\{(r_i,y_i) : i=1,\dots, M\}$.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=.5\linewidth]{sys2.pdf}
 \end{figure}
 
-Given the constraints for the uncertain plant from Step 1, the disturbance $d$ and the measurement
-noise $n$ as $\mc Q_d$, $\mc Q_n$. Let $\mc Q_{T,\gamma}$ denote the achieved quadratic performance
-of the closed loop channel $r\to y$ with parameter $\gamma$.
+\begin{assumption}
+  Assume that the disturbance $d$ and the measurement noise $n$ are Gaussian white with variance
+  $\sigma_d^2$ and $\sigma_n^2$.
+\end{assumption}
 
-The invalidation of controller $K$ is to certify that there does not exist noise signal $(d, n)$ and
-impulse response of the plant $p$ such that:
+
+\paragraph{Step 3, controller invalidation}
+Given the experiment data from Step 1 and Step 2, we want to check the if they are inconsistent with
+the hypothesis that $K$ achieves the performance specification $T_{spec}$.
+%
+In particular, let $T_{\gamma}$ denote the achieved performance of the closed loop channel $d\to y$
+and $n\to y$.
+
+The invalidation of controller $K$ is to certify that there does not exist consistent noise signal
+$(d_i, n_i)$ and impulse response of the plant $p$ such that:
 \begin{align*}
-  & (r,y)\in\mc Q_{T,\gamma}, \quad\tx{(tracking performance achieved)}
+  & (d_i,y_i), (n_i,y_i)\in T_{spec}, \quad\tx{(performance specification)}
   \\
- &  \qq{ (r, e)\in\mc Q_{S,\gamma}, \quad \tx{(constraint on sensitivity)}}
+  & y_i = p * ( k* (r_i-(y_i+n_i)) +d_i), \quad\tx{(constraint from $K$)}
   \\
-  & e = r-(y+n), \quad u = K e, \quad y = p * (u+d),  \quad\tx{(signals)}
+  & d_id_i^\top \preceq \sigma_d^2 I , \quad n_in_i^\top \preceq \sigma_n^2 I, \quad \tx{for }i=
+  1,\dots M,
   \\
-  & d\in\mc Q_d, \quad n\in\mc Q_n,  \quad (v-p*s )\in\mc Q_w. \quad\tx{(constraints satisfied)}
+  & ( v_i - p*s_i) (v_i - p*s_i)^\top \preceq \sigma_w^2 I, \quad \tx{for }i= 1,\dots N.
 \end{align*}
 
-Set $\mc Q_d$ and $\mc Q_n$ to be $\ell_2$ ball, and parameterize $K$ by a FIR $k$.  We invalidate $K$
-if there does not exist signal $(d, n, p, e, u)$ such that
-\begin{align*}
-  & e = r-(y+n), \quad u = k * e, \quad y = p * (u+d), \quad\tx{(signals)}
-  \\
-  & \|y - r\|_2 \le \gamma, \quad \|d\|_2\le \gamma_d, \quad  \|n\|_2\le \gamma_n, \quad
-  \|v-p*s\|_2\le \gamma_w.
-\end{align*}
+By S-procedure, we can invalidate $K$ by solving an SDP feasibility problem, which provides
+a sufficient condition for the invalidation.
 
-This invalidation problem can be turned into an SDP feasibility.  The SDP only provides a sufficient
-condition to invalidate $K$ since s-proc is conservative.
-
+\qq{Ross: make sure it is precise}
 In the parlance of Smith and Dullerud, we have
 \begin{align*}
 P \triangleq &\; \bmat{-I & I & -I & K\\I & 0 & 0 & 0}\\
@@ -112,40 +139,34 @@ W_1(w) = &\; \gamma_n^2 - ||n||_2^2\\
 Q_1(z,v) = &\; \text{ some constraint on $p$?}
 \end{align*}
 
+\begin{remark}
+  Note that the algorithm does not rely on the assumptions we made, but we need the assumptions to
+  analyze the convergence and sample complexity.
+\end{remark}
 
-\tb{ Sample complexity question.}  Suppose $K$ can be invalidated for the true plant $P$. Assume
-that $w$, $d$, $n$ are Gaussian white noise. How many roll-outs \qq{in Step 1 and Step 2 }do we need
-in order to invalidate $K$ with high probability.
+\subsection{Sample complexity analysis}
 
-\tb{Remark} Why not `invalidate' $K$ just by analyze the robust performance given the plant $P$ with
-uncertainty set specified in Step 1?
+Suppose the candidate controller $K$ can be invalidated for the true plant $P$.   Will
+the algorithm consistently invalidate $K$ as $N,M\to\infty$.  How large $N$ and $M$ need to be so that the
+algorithm can invalidate $K$ with high probability over the random noise in the experiments. How
+does the sample complexity depends on the properties of $P$ and $K$?
 
-Data driven invalidation gives us more information about the true plant $P$,
-and this Step 2 can still be viewed as part of `learning'.
-
-
-\paragraph{Step 3, robust controller synthesis}
-The synthesis problem of $K$ is as follows:
-\begin{align*}
-  &\min_{K\in\mc K} \gamma,\quad s.t. \tx{ the above inequalities hold}.
-\end{align*}
-Note that this is  nonconvex.
-
-\tb{ Sample complexity question.}
-Assume that $w$, $d$, $n$ are Gaussian white noise. How many roll-outs in Step 1 do we need in order
-to find $K$ sufficiently close to the optimal controller with respect to the underlying true plant.
+Both open loop and closed loop data give us information about the unknown $P$, with which we try to
+check the consistency.  We do explicit `learning' only with open loop data, while using the closed
+loop data implicitly in the invalidation step.
 
 
+\subsection{Experiment design}
 
-% Given $M$ observed roll-outs for step 1, we can obtain tighter constraints of $P$, which converges
-% to the underlying truth, and the optimal solution in the second step also converges to the optimal
-% controller with respect to the true plant $P$. Establish the asymptotic convergence, and then finite
-% sample rate.
+Let the set of candidate $K$ be continuously parameterized. How to shrink the space efficiently to
+obtain the set of unfalsified $K$.
 
 % \paragraph{Naive questions}
 % Why not replace Step 2 with IQC synthesis? why not replace Step 1 with point estimator plus
 % uncertainty set? Advantage compared to existing 2-step ID and robust control?
 
+
+\end{document}
 
 \newpage
 
