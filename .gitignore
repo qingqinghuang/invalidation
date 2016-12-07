@@ -4,5 +4,6 @@
 *.synctex.gz
 *.fdb_latexmk
 *.log
+*.out
 notes.pdf
 siso.pdf
