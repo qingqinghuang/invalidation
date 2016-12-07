@@ -88,6 +88,11 @@ i=1,\dots, N\}$.
     % &\; ( v_i - p*s_i) (v_i - p*s_i)^\top \preceq \sigma_w^2 I, \quad \tx{for }i= 1,\dots N. \\
     &\; \rb{||v_i - p*s_i||_2^2 \leq \sigma_w^2, \quad \tx{for }i= 1,\dots N. \tx{ (same thing)}}
   \end{align*}
+  Via the Schur complement, this is equivalent to
+  \begin{align*}
+  \bmat{\sigma_wI & v_i - T_ps_i \\ (v_i - T_ps_i)^T & \sigma_w} \succeq &\; 0\:,
+  \end{align*}
+  where $T_p$ is the (lower triangular) impulse response matrix of $p$.
 
 \end{definition}
 
