@@ -83,9 +83,10 @@ i=1,\dots, N\}$.
 
 
   For example, under the assumptions, the observation $(s,v)$ gives the following constraint on the
-  impulse response $p$:
+  impulse response $p$ \rb{Doesn't this only hold in expectation/WHP? The constraint is fine, but it doesn't ``follow from the assumption''.}:
   \begin{align*}
-    ( v_i - p*s_i) (v_i - p*s_i)^\top \preceq \sigma_w^2 I, \quad \tx{for }i= 1,\dots N.
+    % &\; ( v_i - p*s_i) (v_i - p*s_i)^\top \preceq \sigma_w^2 I, \quad \tx{for }i= 1,\dots N. \\
+    &\; \rb{||v_i - p*s_i||_2^2 \leq \sigma_w^2, \quad \tx{for }i= 1,\dots N. \tx{ (same thing)}}
   \end{align*}
 
 \end{definition}
@@ -118,8 +119,8 @@ $(d_i, n_i)$ and impulse response of the plant $p$ such that:
   \\
   & y_i = p * ( k* (r_i-(y_i+n_i)) +d_i), \quad\tx{(constraint from $K$)}
   \\
-  & d_id_i^\top \preceq \sigma_d^2 I , \quad n_in_i^\top \preceq \sigma_n^2 I, \quad \tx{for }i=
-  1,\dots M,
+  & \rb{||d_i||_2^2\leq \sigma_d^2 , \quad ||n_i||_2^2\leq \sigma_n^2, \quad \tx{for }i=
+  1,\dots M,}
   \\
   & ( v_i - p*s_i) (v_i - p*s_i)^\top \preceq \sigma_w^2 I, \quad \tx{for }i= 1,\dots N.
 \end{align*}
