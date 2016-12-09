@@ -144,8 +144,8 @@ u \triangleq &\; r \\
 w \triangleq &\; \bmat{d\\n}\\
 W_{d,i}(w) = &\; \sigma_d^2 - ||d_i||_2^2\\
 W_{n,i}(w) = &\; \sigma_n^2 - ||n_i||_2^2\\
-W_{s,i}(w) = &\; \gamma_s^2 - ||d_i - y_i||_2^2\\
-W_{s^c,i}(w) = &\; \gamma_{s^c}^2 - ||n_i - y_i||_2^2\\
+W_{s,i}(w) = &\; \gamma_s^2||d_i||_2^2 - ||y_i||_2^2\\
+W_{s^c,i}(w) = &\; \gamma_{s^c}^2||n_i||_2^2 - ||y_i||_2^2\\
 \end{align*}
 Instead of quadratic inequalities on $(z,v)$, we instead use quadratic inequalities on the plant impulse response vector $p$, which do not change the model invalidation setup.
 \begin{align*}
