@@ -71,13 +71,13 @@ i=1,\dots, N\}$.
 \end{assumption}
 
 \begin{assumption}
-  Assume that $P$ is FIR and the length of the impulse response is less than $T$. We parameterize
+  Assume that $P$ is FIR and the length of the impulse response is less than $L_p$. We parameterize
   the plant by its impulse response $p$.
 \end{assumption}
 
 
 \begin{definition}[Toeplitz operator]
-  Linear operator $T(s): \R^N\to \R^{N\times T}$, maps a length $N$ signal $s$ to an $N\times T$
+  Linear operator $T(s): \R^N\to \R^{N\times L_p}$, maps a length $N$ signal $s$ to an $N\times L_p$
   matrix.
   \begin{align*}
     T(s) = \lt[
@@ -110,7 +110,7 @@ i=1,\dots, N\}$.
   \begin{align*}
     % &\; ( v_i - p*s_i) (v_i - p*s_i)^\top \preceq \sigma_w^2 I, \quad \tx{for }i= 1,\dots N. \\
     %&\; \rb{||v_i - p*s_i||_2^2 \leq \sigma_w^2, \quad \tx{for }i= 1,\dots N. \tx{ (same thing)}}
-    \|v - T_s p \|_2^2 \le N \sigma_w^2
+    \|v - T(s) p \|_2^2 < N \sigma_w^2.
   \end{align*}
   \rb{Doesn't this only hold in expectation/WHP? The constraint is fine, but it
     doesn't ``follow from the assumption''.}:
@@ -142,29 +142,154 @@ $\{(r_i,y_i) : i=1,\dots, M\}$.
 Given the experiment data from Step 1 and Step 2, we want to check the if they are inconsistent with
 the hypothesis that $K$ achieves the performance specification $T_{spec}$.
 
-Let $R_{\tau}(x):\R^{M}\to \R^{\tau}$ denote the truncation operator that retains the first $\tau$
+Let $\Gamma_{\tau}(x):\R^{M}\to \R^{\tau}$ denote the truncation operator that retains the first $\tau$
 coordinates of the vector $x$. We consider the mixed sensitivity performance criterion in the time
 domain:
 \begin{align*}
-  \|R_{\tau}(y-r)\|_2^2 + \|R_{\tau}(u)\|_2^2 \le \|R_{\tau}(r)\|_2^2, \quad \fa \tau = 0,1,\dots, M.
+  \|\Gamma_{\tau}(y-r)\|_2^2 + \|\Gamma_{\tau}(z)\|_2^2 \le \|\Gamma_{\tau}(r)\|_2^2, \quad \fa \tau = 0,1,\dots, M.
 \end{align*}
 
-The invalidation of controller $K$ is to certify that there does not exist consistent noise signal
-$(d, n)$ and impulse response of the plant $p$ such that:
-\begin{align*}
-  & \|R_{\tau}(y-r)\|_2^2 + \|R_{\tau}(u)\|_2^2 \le \|R_{\tau}(r)\|_2^2, \quad \fa \tau = 0,1,\dots,
-  M,
+Given the open loop data $(s,v)$ and the closed loop data $(r,y)$, in order to  invalidate controller
+$K$ we want to certify that there does not exist consistent noise signal $(n,d)$ and signal $z$ and
+impulse response of the plant $p$ such that:
+\begin{align}
+  % & y = T( T(r-(y+n)) k +d) p,
+  & T(k) (r-y - n) = z-d,
+  \label{eq:linear-k}
   \\
-  & y = T( T(r-(y+n)) k +d) p,
+  & T(p) z = y,
+  \label{eq:quad-p}
   \\
-  & ||d||_2^2\leq M \sigma_d^2 , \quad ||n||_2^2\leq M \sigma_n^2, \quad ||v - T(s)p||_2^2 \leq N
-  \sigma_w^2
-\end{align*}
+  & ||v - T(s)p||_2^2 < N \sigma_w^2, \quad ||d||_2^2\leq M \sigma_d^2 , \quad ||n||_2^2\leq M
+  \sigma_n^2,
+  \label{eq:noise-bound}
+  \\
+  & \|\Gamma_{\tau}(y-r)\|_2^2 + \|\Gamma_{\tau}(z)\|_2^2 \le \|\Gamma_{\tau}(r)\|_2^2, \quad \fa
+  \tau = 1,\dots, M,
+  \label{eq:perf-spec}
+\end{align}
+where the Toeplitz matrices $T(k), T(p)\in\R^{M\times M}$  are given by (for $x=k,p$):
+\begin{align}
+  \label{eq:Tk-Tp}
+  T(x) = \lt[
+    \begin{array}[c]{ccccc}
+      x_1 & 0 &\dots & 0  & 0
+      \\
+      x_2 & x_1 & \dots  & 0  & 0
+      \\
+      & & \vdots & &
+      \\
+      0  & 0  & \dots & x_2 & x_1
+    \end{array}
+\rt].
+\end{align}
+
+
+\paragraph{Invalidation via LMI}
 
 By S-procedure, we can invalidate $K$ by solving an SDP feasibility problem, which provides
 a sufficient condition for the invalidation.
 
+First, we get rid of the linear constraint in \eqref{eq:linear-k} and redefine the free parameters
+$\xi \in\R^{2M}$ as linear transformation of $(n,d,z) \in\R^{3M}$.  By \eqref{eq:linear-k}, we have
+\begin{align*}
+  T(k) (r-y) = [T(k), I, - I]   \lt[ \begin{array}[c]{c} n\\d\\z \end{array} \rt]
+\end{align*}
+Solve for the linear equation
+\begin{align}
+  \label{eq:ndz-xi}
+  \lt[ \begin{array}[c]{c} n\\d\\z \end{array} \rt]
+  = \lt[ \begin{array}[c]{c} r-y\\0\\0 \end{array} \rt]
+  +  \lt[ \begin{array}[c]{c} R_n\\R_d\\R_z \end{array} \rt] \xi,
+\end{align}
+where $R\equiv \lt[ \begin{array}[c]{c} R_n\\R_d\\R_z \end{array} \rt] \in\R^{3M\times 2M}$ is the
+kernel subspace of $ [T(k), I, - I] $.
 
+Next, we write the quadratic (in)equalities in \eqref{eq:quad-p}, \eqref{eq:perf-spec},
+\eqref{eq:noise-bound} as quadratic inequalities in $(\xi, p)$.
+
+For \eqref{eq:quad-p}, we have $2M$ inequalities in the form $G_i^p([\epsilon,p]) \ge 0$ and
+$-G_i^p([\epsilon,p]) \ge 0$, for $i=1,\dots, M$,
+\begin{align*}
+  G_i^p = {1\over 2}\lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]^\top
+  \lt[ \begin{array}[c]{cc} 0 & (T_i R_z)^\top \\ T_i R_z & 0  \end{array} \rt]
+  \lt[ \begin{array}[c]{c} \xi \\p \end{array} \rt] - y_i = 0,
+\end{align*}
+where the constant matrix $R_z$ is defined in \eqref{eq:ndz-xi}, and the $L_p\times M$ matrices
+$T_i$ are defined as
+\begin{align}
+  \label{eq:def-Ti}
+  T_1 = \lt[ \begin{array}[c]{cccc} 1 & 0 & 0 & \\ 0&0&0&\dots \\ 0&0&0& \\ \dots \end{array} \rt],
+  T_2 = \lt[ \begin{array}[c]{cccc} 0 & 1 & 0 & \\ 1&0&0&\dots \\ 0&0&0& \\ \dots\end{array} \rt],
+  \dots,
+  T_M = \lt[ \begin{array}[c]{cccc} &0 & 0 & 1  \\ \dots&0&1&0 \\ &1&0&0 \\ \dots\end{array} \rt].
+\end{align}
+
+For \eqref{eq:noise-bound}, the 3 inequalities are given by:
+\begin{align*}
+&  G^p_0 =   - \lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]^\top
+  \lt[ \begin{array}[c]{cc} 0  &0 \\ 0 & T(s)^\top T(s)   \end{array} \rt]
+  \lt[ \begin{array}[c]{c} \xi \\p \end{array} \rt]
+  +  \lt[ \begin{array}[c]{c c} 0, 2v^\top T(s) \end{array} \rt]
+  \lt[ \begin{array}[c]{c} \xi  \\p \end{array} \rt] + N\sigma_w^2 - \|v\|_2^2 > 0,
+  \\
+&  G^d = - \lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]^\top
+  \lt[ \begin{array}[c]{cc} R_d^\top R_d  &0 \\ 0 & 0  \end{array} \rt]
+  \lt[ \begin{array}[c]{c} \xi \\p \end{array} \rt] +  M\sigma_d^2 \ge 0,
+  \\
+&  G^n =  - \lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]^\top
+  \lt[ \begin{array}[c]{cc} R_n^\top R_n  & 0 \\ 0 & 0  \end{array} \rt]
+  \lt[ \begin{array}[c]{c} \xi \\p \end{array} \rt] -
+  [ 2(r-y)^\top R_n, 0]    \lt[ \begin{array}[c]{c} \xi  \\p \end{array} \rt] + M\sigma_n^2  -
+  \|r-y\|_2^2 \ge 0.
+\end{align*}
+
+For \eqref{eq:perf-spec}, the $M$ inequalities are as below. For $i=1,\dots, M$,
+\begin{align*}
+  G^g_i= -   \lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]^\top
+    \lt[ \begin{array}[c]{cc} (\Gamma_{i}R_z)^\top \Gamma_{i}R_z  &0 \\ 0 & 0  \end{array} \rt]
+  \lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]
+  + \|\Gamma_{i}(r)\|_2^2 -   \|\Gamma_{i}(y-r)\|_2^2 \ge 0.
+\end{align*}
+
+Finally, s-proc gives the sufficient condition for invalidating $K$: if there exist scalars such
+that the quadratic function
+\begin{align*}
+  G^p_0 + \alpha^d G^d + \alpha^n G^n  + \alpha^g_1 G^g_1
+  + \dots+ \alpha^g_M G^g_M   + \alpha^p_1 G^p_1 +\dots + \alpha^p_M G^p_M\le  0,
+\end{align*}
+and $\alpha^d, \alpha^n,\alpha^g_1,\dots, \alpha^g_M$ are non-negative, then $K$ is invalidated.
+
+This condition is  equivalent to the  feasibility of the following LMI:
+Find non-negative constants $\alpha^d, \alpha^n,\alpha^g_1,\dots, \alpha^g_M$ and indefinite $\alpha^p_1,\dots
+\alpha^p_M$ such that
+\begin{align*}
+  M_0^p +  \alpha^d M^d + \alpha^n M^n  + \alpha^g_1 M^g_1
+  + \dots+ \alpha^g_M M^g_M   + \alpha^p_1 M^p_1 +\dots + \alpha^p_M M^p_M \preceq 0,
+\end{align*}
+where the constant matrices are given by (note that the 3 coordinates for the matrices correspond to $(\epsilon, p, 1)$)
+\begin{align*}
+  & M^p_0 = \lt[ \begin{array}[c]{ccc} 0 &0&0 \\ 0 & -T(s)^\top T(s)& T(s)^\top v \\ 0& v^\top T(s)
+    & N\sigma_w^2 - \|v\|_2^2 \end{array} \rt]
+  \\
+  & M^d = \lt[ \begin{array}[c]{ccc} -R_d^\top R_d &0 & 0 \\ 0 & 0 & 0 \\ 0&0&
+    M\sigma_d^2 \end{array} \rt]
+  \\
+  & M^n = \lt[ \begin{array}[c]{ccc} -R_n^\top R_n &0& -R_n^\top(r-y) \\ 0 & 0& 0 \\ -(r-y)^\top
+    R_n& 0 & M\sigma_n^2 - \|r-y\|_2^2 \end{array} \rt]
+  \\
+  & M^g_i = \lt[ \begin{array}[c]{ccc} - (\Gamma_{i}R_z)^\top \Gamma_{i}R_z &0 & 0 \\ 0 & 0 & 0 \\
+    0&0& \|\Gamma_{i}(r)\|_2^2 - \|\Gamma_{i}(y-r)\|_2^2 \end{array} \rt], \quad i = 1,\dots M
+  \\
+  & M^p_i = \lt[ \begin{array}[c]{ccc} 0 &{1\over 2}(T_iR_z)^\top & 0 \\ {1\over 2} T_iR_z & 0 & 0
+    \\ 0&0& -y_i \end{array} \rt], \quad i = 1,\dots M.
+\end{align*}
+Recall that the signal $(s,v, r, y)$ are given, the matrices $R_n, R_d,R_z$ are given in
+\eqref{eq:ndz-xi}, $T_i$'s are given in \eqref{eq:def-Ti}, and $\Gamma_i$ are the truncation
+matrices.
+
+
+\paragraph{Ross:}
 
 
 \rb{I forget which covariance constraint things we came up with}
