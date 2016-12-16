@@ -164,7 +164,7 @@ impulse response of the plant $p$ such that:
   \sigma_n^2,
   \label{eq:noise-bound}
   \\
-  & \|\Gamma_{\tau}(y-r)\|_2^2 + \|\Gamma_{\tau}(z)\|_2^2 \le \|\Gamma_{\tau}(r)\|_2^2, \quad \fa
+  & \|\Gamma_{\tau}(y-r)\|_2^2 + \|\Gamma_{\tau}(z)\|_2^2 \le \gamma^2 \|\Gamma_{\tau}(r)\|_2^2, \quad \fa
   \tau = 1,\dots, M,
   \label{eq:perf-spec}
 \end{align}
@@ -249,7 +249,7 @@ For \eqref{eq:perf-spec}, the $M$ inequalities are as below. For $i=1,\dots, M$,
   G^g_i= -   \lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]^\top
     \lt[ \begin{array}[c]{cc} (\Gamma_{i}R_z)^\top \Gamma_{i}R_z  &0 \\ 0 & 0  \end{array} \rt]
   \lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]
-  + \|\Gamma_{i}(r)\|_2^2 -   \|\Gamma_{i}(y-r)\|_2^2 \ge 0.
+  + \gamma^2 \|\Gamma_{i}(r)\|_2^2 -   \|\Gamma_{i}(y-r)\|_2^2 \ge 0.
 \end{align*}
 
 Finally, s-proc gives the sufficient condition for invalidating $K$: if there exist scalars such
@@ -279,7 +279,7 @@ where the constant matrices are given by (note that the 3 coordinates for the ma
     R_n& 0 & M\sigma_n^2 - \|r-y\|_2^2 \end{array} \rt]
   \\
   & M^g_i = \lt[ \begin{array}[c]{ccc} - (\Gamma_{i}R_z)^\top \Gamma_{i}R_z &0 & 0 \\ 0 & 0 & 0 \\
-    0&0& \|\Gamma_{i}(r)\|_2^2 - \|\Gamma_{i}(y-r)\|_2^2 \end{array} \rt], \quad i = 1,\dots M
+    0&0& \gamma^2 \|\Gamma_{i}(r)\|_2^2 - \|\Gamma_{i}(y-r)\|_2^2 \end{array} \rt], \quad i = 1,\dots M
   \\
   & M^p_i = \lt[ \begin{array}[c]{ccc} 0 &{1\over 2}(T_iR_z)^\top & 0 \\ {1\over 2} T_iR_z & 0 & 0
     \\ 0&0& -y_i \end{array} \rt], \quad i = 1,\dots M.
@@ -287,6 +287,40 @@ where the constant matrices are given by (note that the 3 coordinates for the ma
 Recall that the signal $(s,v, r, y)$ are given, the matrices $R_n, R_d,R_z$ are given in
 \eqref{eq:ndz-xi}, $T_i$'s are given in \eqref{eq:def-Ti}, and $\Gamma_i$ are the truncation
 matrices.
+
+
+\subsection{Sample complexity analysis}
+
+\begin{enumerate}
+\item Get rid of $n$ or $d$.
+\item Limiting case when $\sigma_w, \sigma_n,\sigma_d\to 0$.
+\item Asymptotic consistency when $N,M\to \infty$.
+\item Define ``bad'' K, achieve performance $\gamma$?
+\end{enumerate}
+
+
+
+
+Suppose the candidate controller $K$ can be invalidated for the true plant $P$.   Will
+the algorithm consistently invalidate $K$ as $N,M\to\infty$.  How large $N$ and $M$ need to be so that the
+algorithm can invalidate $K$ with high probability over the random noise in the experiments. How
+does the sample complexity depends on the properties of $P$ and $K$?
+
+Both open loop and closed loop data give us information about the unknown $P$, with which we try to
+check the consistency.  We do explicit `learning' only with open loop data, while using the closed
+loop data implicitly in the invalidation step.
+
+
+\subsection{Experiment design}
+
+Let the set of candidate $K$ be continuously parameterized. How to shrink the space efficiently to
+obtain the set of unfalsified $K$.
+
+% \paragraph{Naive questions}
+% Why not replace Step 2 with IQC synthesis? why not replace Step 1 with point estimator plus
+% uncertainty set? Advantage compared to existing 2-step ID and robust control?
+
+
 
 
 \paragraph{Ross:}
@@ -340,27 +374,6 @@ The model is invalidated iff there exist nonnegative scalars $\tau_i, \tau_i'$ s
 \end{corollary}
 
 where $x_0 = \bmat{\tilde x_0\\ x_{v,z}}$, $R = \bmat{\tilde R\\R_{v,z}}$, and $A_i,b_i,c_i,A'_j,b'_j,c'_j$ are given by...
-
-\subsection{Sample complexity analysis}
-
-Suppose the candidate controller $K$ can be invalidated for the true plant $P$.   Will
-the algorithm consistently invalidate $K$ as $N,M\to\infty$.  How large $N$ and $M$ need to be so that the
-algorithm can invalidate $K$ with high probability over the random noise in the experiments. How
-does the sample complexity depends on the properties of $P$ and $K$?
-
-Both open loop and closed loop data give us information about the unknown $P$, with which we try to
-check the consistency.  We do explicit `learning' only with open loop data, while using the closed
-loop data implicitly in the invalidation step.
-
-
-\subsection{Experiment design}
-
-Let the set of candidate $K$ be continuously parameterized. How to shrink the space efficiently to
-obtain the set of unfalsified $K$.
-
-% \paragraph{Naive questions}
-% Why not replace Step 2 with IQC synthesis? why not replace Step 1 with point estimator plus
-% uncertainty set? Advantage compared to existing 2-step ID and robust control?
 
 
 \end{document}
