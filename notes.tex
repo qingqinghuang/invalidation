@@ -110,7 +110,7 @@ i=1,\dots, N\}$.
   \begin{align*}
     % &\; ( v_i - p*s_i) (v_i - p*s_i)^\top \preceq \sigma_w^2 I, \quad \tx{for }i= 1,\dots N. \\
     %&\; \rb{||v_i - p*s_i||_2^2 \leq \sigma_w^2, \quad \tx{for }i= 1,\dots N. \tx{ (same thing)}}
-    \|v - T(s) p \|_2^2 < N \sigma_w^2.
+    \|v - T(s) p \|_2^2 \le N \sigma_w^2.
   \end{align*}
   \rb{Doesn't this only hold in expectation/WHP? The constraint is fine, but it
     doesn't ``follow from the assumption''.}:
@@ -160,7 +160,7 @@ impulse response of the plant $p$ such that:
   & T(p) z = y,
   \label{eq:quad-p}
   \\
-  & ||v - T(s)p||_2^2 < N \sigma_w^2, \quad ||d||_2^2\leq M \sigma_d^2 , \quad ||n||_2^2\leq M
+  & ||v - T(s)p||_2^2 \le N \sigma_w^2, \quad ||d||_2^2\leq M \sigma_d^2 , \quad ||n||_2^2\leq M
   \sigma_n^2,
   \label{eq:noise-bound}
   \\
@@ -187,8 +187,8 @@ where the Toeplitz matrices $T(k), T(p)\in\R^{M\times M}$  are given by (for $x=
 
 \paragraph{Invalidation via LMI}
 
-By S-procedure, we can invalidate $K$ by solving an SDP feasibility problem, which provides
-a sufficient condition for the invalidation.
+By S-procedure, we can invalidate $K$ by solving an SDP feasibility problem, which SDP relaxation
+provides a sufficient condition for the invalidation.
 
 First, we get rid of the linear constraint in \eqref{eq:linear-k} and redefine the free parameters
 $\xi \in\R^{2M}$ as linear transformation of $(n,d,z) \in\R^{3M}$.  By \eqref{eq:linear-k}, we have
@@ -231,7 +231,7 @@ For \eqref{eq:noise-bound}, the 3 inequalities are given by:
   \lt[ \begin{array}[c]{cc} 0  &0 \\ 0 & T(s)^\top T(s)   \end{array} \rt]
   \lt[ \begin{array}[c]{c} \xi \\p \end{array} \rt]
   +  \lt[ \begin{array}[c]{c c} 0, 2v^\top T(s) \end{array} \rt]
-  \lt[ \begin{array}[c]{c} \xi  \\p \end{array} \rt] + N\sigma_w^2 - \|v\|_2^2 > 0,
+  \lt[ \begin{array}[c]{c} \xi  \\p \end{array} \rt] + N\sigma_w^2 - \|v\|_2^2 \ge 0,
   \\
 &  G^d = - \lt[ \begin{array}[c]{c} \xi\\ p \end{array} \rt]^\top
   \lt[ \begin{array}[c]{cc} R_d^\top R_d  &0 \\ 0 & 0  \end{array} \rt]
@@ -252,22 +252,8 @@ For \eqref{eq:perf-spec}, the $M$ inequalities are as below. For $i=1,\dots, M$,
   + \gamma^2 \|\Gamma_{i}(r)\|_2^2 -   \|\Gamma_{i}(y-r)\|_2^2 \ge 0.
 \end{align*}
 
-Finally, s-proc gives the sufficient condition for invalidating $K$: if there exist scalars such
-that the quadratic function
-\begin{align*}
-  G^p_0 + \alpha^d G^d + \alpha^n G^n  + \alpha^g_1 G^g_1
-  + \dots+ \alpha^g_M G^g_M   + \alpha^p_1 G^p_1 +\dots + \alpha^p_M G^p_M\le  0,
-\end{align*}
-and $\alpha^d, \alpha^n,\alpha^g_1,\dots, \alpha^g_M$ are non-negative, then $K$ is invalidated.
-
-This condition is  equivalent to the  feasibility of the following LMI:
-Find non-negative constants $\alpha^d, \alpha^n,\alpha^g_1,\dots, \alpha^g_M$ and indefinite $\alpha^p_1,\dots
-\alpha^p_M$ such that
-\begin{align*}
-  M_0^p +  \alpha^d M^d + \alpha^n M^n  + \alpha^g_1 M^g_1
-  + \dots+ \alpha^g_M M^g_M   + \alpha^p_1 M^p_1 +\dots + \alpha^p_M M^p_M \preceq 0,
-\end{align*}
-where the constant matrices are given by (note that the 3 coordinates for the matrices correspond to $(\epsilon, p, 1)$)
+Then we rewrite the above functions as homogeneous quadratic functions. Define the constant matrices
+by (note that the 3 coordinates for the matrices correspond to $(\epsilon, p, 1)$)
 \begin{align*}
   & M^p_0 = \lt[ \begin{array}[c]{ccc} 0 &0&0 \\ 0 & -T(s)^\top T(s)& T(s)^\top v \\ 0& v^\top T(s)
     & N\sigma_w^2 - \|v\|_2^2 \end{array} \rt]
@@ -287,6 +273,43 @@ where the constant matrices are given by (note that the 3 coordinates for the ma
 Recall that the signal $(s,v, r, y)$ are given, the matrices $R_n, R_d,R_z$ are given in
 \eqref{eq:ndz-xi}, $T_i$'s are given in \eqref{eq:def-Ti}, and $\Gamma_i$ are the truncation
 matrices.
+
+
+Consider the infeasibility  of quadratic inequalities:
+\begin{align*}
+  \{x\in\R^{2M + L_p} : x^\top M_i x \ge 0 \}
+\end{align*}
+
+The primal-dual pair of SDP relaxations is given by:
+
+\begin{align*}
+  \tx{(primal:)} & X\preceq 0
+  \\
+  & Tr(X) = 1
+  \\
+  & Tr(M_i X)\ge 0
+  \\
+  \tx{(dual:)} & M_0^p + \alpha^d M^d + \alpha^n M^n + \alpha^g_1 M^g_1 + \dots+ \alpha^g_M M^g_M +
+  \alpha^p_1 M^p_1 +\dots + \alpha^p_M M^p_M \succeq -I
+  \\
+  & \alpha^d, \alpha^n,\alpha^g_1,\dots, \alpha^g_M\ge 0
+\end{align*}
+
+% Finally, s-proc gives the sufficient condition for invalidating $K$: if there exist scalars such
+% that the quadratic function
+% \begin{align*}
+%   G^p_0 + \alpha^d G^d + \alpha^n G^n  + \alpha^g_1 G^g_1
+%   + \dots+ \alpha^g_M G^g_M   + \alpha^p_1 G^p_1 +\dots + \alpha^p_M G^p_M\le  0,
+% \end{align*}
+% and $\alpha^d, \alpha^n,\alpha^g_1,\dots, \alpha^g_M$ are non-negative, then $K$ is invalidated.
+
+% This condition is  equivalent to the  feasibility of the following LMI:
+% Find non-negative constants $\alpha^d, \alpha^n,\alpha^g_1,\dots, \alpha^g_M$ and indefinite $\alpha^p_1,\dots
+% \alpha^p_M$ such that
+% \begin{align*}
+%   M_0^p +  \alpha^d M^d + \alpha^n M^n  + \alpha^g_1 M^g_1
+%   + \dots+ \alpha^g_M M^g_M   + \alpha^p_1 M^p_1 +\dots + \alpha^p_M M^p_M \preceq 0,
+% \end{align*}
 
 
 \subsection{Sample complexity analysis}
