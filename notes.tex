@@ -13,6 +13,26 @@
 \iffalse
 \fi
 
+{
+ \theoremstyle{plain}
+      \newtheorem{asm}{Assumption}
+}
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+%\newtheorem{claim}[thm]{Claim}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+
+
+\newtheorem{prop}[thm]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{conj}{Conjecture}[section]
+\newtheorem{exmp}{Example}[section]
+\newtheorem{exc}{Exercise}[section]
+
+
 \begin{document}
 \title{controller validation for uncertain systems}
 \date{\today}
@@ -205,6 +225,14 @@ obtain the set of unfalsified $K$.
 % Why not replace Step 2 with IQC synthesis? why not replace Step 1 with point estimator plus
 % uncertainty set? Advantage compared to existing 2-step ID and robust control?
 
+\subsection{}
+At some point, we might want include nuclear norm constraints which will restrict the complexity of the impulse response. To put nuclear norm contrains into our SDP framework, we can invoke the following lemma from [Maryam Fazels thesis]
+\begin{lem} Let $X \in \mathbb{R}^{m \times n}$. Then, $\|X\|_* \le t$ if and only there exists matrices $Y \in \mathbb{R}^{m \times m}$ and $Z \in \mathbb{R}^{n\times n}$ for which
+\begin{eqnarray}
+\mathrm{Tr}(Y) + \mathrm{Tr}(Z) \le 2t & \text{and} \quad \begin{bmatrix} Y & X \\ X^T & Z \end{bmatrix} \succeq 0
+\end{eqnarray}
+\end{lem}
+
 
 \end{document}
 
@@ -310,7 +338,6 @@ throw it out. If more than one $K$ is left, try:
   \mc Q_{\Delta}'$?  No system in this subset can generate the observed sequences.
 
 
-\end{enumerate}
 
 
 
